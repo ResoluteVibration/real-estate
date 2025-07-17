@@ -20,7 +20,7 @@ class WelcomeScreen extends StatelessWidget {
                   'assets/images/welcome.jpg',
                   fit: BoxFit.cover,
                 ),
-                Container(color: Colors.black.withOpacity(0)),
+                Container(color: Colors.black.withOpacity(0.1)),
                 const Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
@@ -45,19 +45,39 @@ class WelcomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text('Get involved with people and events around you.'),
+                  const Text('Ready to find your new Home?',
+                    style: TextStyle(color: Colors.black, fontSize: 18,fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 20),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                     ),
                     onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen())),
-                    child: const Text("Sign in"),
+                    child: const Text("Sign in",
+                      style: TextStyle(
+                          color: Colors.white
+                      ),
+                    ),
                   ),
-                  TextButton(
+                  const SizedBox(height: 20),
+
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                    ),
                     onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen())),
-                    child: const Text("Or Create Account →"),
-                  )
+                    child: const Text("Create Account",
+                      style: TextStyle(
+                          color: Colors.black
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

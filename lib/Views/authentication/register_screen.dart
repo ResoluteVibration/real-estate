@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -24,6 +25,7 @@ class RegisterScreen extends StatelessWidget {
             _inputField("Full Name"),
             _inputField("Email"),
             _inputField("Phone Number"),
+            _inputField("City"),
             _inputField("Password", obscure: true),
             _inputField("Confirm Password", obscure: true),
             Row(
@@ -39,10 +41,15 @@ class RegisterScreen extends StatelessWidget {
               child: const Text("Sign Up"),
             ),
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+              },
               child: const Text("Already have an account? Sign in", style: TextStyle(color: Colors.white)),
-            )
+            ),
           ],
         ),
       ),
@@ -58,7 +65,7 @@ class RegisterScreen extends StatelessWidget {
           hintText: label,
           filled: true,
           fillColor: Colors.grey[850],
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
         ),
       ),
     );
