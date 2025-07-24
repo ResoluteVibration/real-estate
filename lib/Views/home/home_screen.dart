@@ -1,242 +1,216 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 
-class HomeScreen extends StatefulWidget {
+import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/data.dart';
+import 'package:real_estate/widgets/category_item.dart';
+import 'package:real_estate/widgets/custom_image.dart';
+import 'package:real_estate/widgets/custom_textbox.dart';
+import 'package:real_estate/widgets/icon_box.dart';
+import 'package:real_estate/widgets/property_item.dart';
+import 'package:real_estate/widgets/recent_item.dart';
+import 'package:real_estate/widgets/recommend_item.dart';
+
+class HomeScreen extends material.StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
-  void _onTabTapped(int index) {
-    setState(() => _selectedIndex = index);
-  }
+class _HomeScreenState extends material.State<HomeScreen> {
+  int _selectedCategory = 0;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildSearchBar(),
-            const SizedBox(height: 10),
-            _buildSectionTitle("Get started with", "Explore real estate options in top cities"),
-            _buildQuickActions(),
-            const SizedBox(height: 20),
-            _buildSectionTitle("Insights & Utilities", "Go from browsing to buying", showViewAll: true),
-            _buildInsightsGrid(),
-            const SizedBox(height: 80),
-          ],
+  material.Widget build(material.BuildContext context) {
+    return material.CustomScrollView(
+      slivers: [
+        material.SliverAppBar(
+          backgroundColor: AppColor.appBgColor,
+          pinned: true,
+          snap: true,
+          floating: true,
+          title: _buildHeader(),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () => _onTabTapped(2),
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNavBar(),
+        material.SliverToBoxAdapter(child: _buildBody())
+      ],
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.blue[900],
-      elevation: 0,
-      title: const Text("A New Standard of Living", style: TextStyle(fontSize: 16)),
-      actions: [
-        TextButton(
-          onPressed: () {},
-          child: const Text("Post property", style: TextStyle(color: Colors.white)),
+  material.Widget _buildHeader() {
+    return material.Column(
+      children: [
+        material.Row(
+          crossAxisAlignment: material.CrossAxisAlignment.center,
+          mainAxisAlignment: material.MainAxisAlignment.spaceBetween,
+          children: [
+            material.Column(
+              crossAxisAlignment: material.CrossAxisAlignment.start,
+              children: [
+                material.Text(
+                  "Hello!",
+                  style: material.TextStyle(
+                    color: AppColor.darker,
+                    fontSize: 14,
+                    fontWeight: material.FontWeight.w500,
+                  ),
+                ),
+                material.Text(
+                  "Sangvaleap",
+                  style: material.TextStyle(
+                    color: material.Colors.black87,
+                    fontSize: 17,
+                    fontWeight: material.FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            CustomImage(
+              profile,
+              width: 35,
+              height: 35,
+              trBackground: true,
+              borderColor: AppColor.primary,
+              radius: 10,
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: "Search city, locality, projects...",
-          prefixIcon: const Icon(Icons.search),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, String subtitle, {bool showViewAll = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  material.Widget _buildBody() {
+    return material.SingleChildScrollView(
+      child: material.Column(
+        crossAxisAlignment: material.CrossAxisAlignment.start,
         children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 4),
-            Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-          ]),
-          if (showViewAll)
-            TextButton(
-              onPressed: () {},
-              child: const Text("View All", style: TextStyle(color: Colors.blue)),
-            )
+          const material.SizedBox(height: 15),
+          _buildSearch(),
+          const material.SizedBox(height: 20),
+          _buildCategories(),
+          const material.SizedBox(height: 20),
+          material.Padding(
+            padding: const material.EdgeInsets.symmetric(horizontal: 15),
+            child: material.Row(
+              mainAxisAlignment: material.MainAxisAlignment.spaceBetween,
+              children: const [
+                material.Text("Popular", style: material.TextStyle(fontSize: 18, fontWeight: material.FontWeight.w600)),
+                material.Text("See all", style: material.TextStyle(fontSize: 14, color: AppColor.darker)),
+              ],
+            ),
+          ),
+          const material.SizedBox(height: 20),
+          _buildPopulars(),
+          const material.SizedBox(height: 20),
+          material.Padding(
+            padding: const material.EdgeInsets.symmetric(horizontal: 15),
+            child: material.Row(
+              mainAxisAlignment: material.MainAxisAlignment.spaceBetween,
+              children: [
+                const material.Text("Recommended", style: material.TextStyle(fontSize: 18, fontWeight: material.FontWeight.w600)),
+                material.Text("See all", style: material.TextStyle(fontSize: 14, color: material.Colors.black.withOpacity(0.7))),
+              ],
+            ),
+          ),
+          const material.SizedBox(height: 20),
+          _buildRecommended(),
+          const material.SizedBox(height: 20),
+          material.Padding(
+            padding: const material.EdgeInsets.symmetric(horizontal: 15),
+            child: material.Row(
+              mainAxisAlignment: material.MainAxisAlignment.spaceBetween,
+              children: const [
+                material.Text("Recent", style: material.TextStyle(fontSize: 18, fontWeight: material.FontWeight.w600)),
+                material.Text("See all", style: material.TextStyle(fontSize: 14, color: AppColor.darker)),
+              ],
+            ),
+          ),
+          const material.SizedBox(height: 20),
+          _buildRecent(),
+          const material.SizedBox(height: 100),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActions() {
-    final List<Map<String, dynamic>> actions = [
-      {'icon': Icons.home, 'label': 'Buy'},
-      {'icon': Icons.key, 'label': 'Rent'},
-      {'icon': Icons.insights, 'label': 'Insights'},
-      {'icon': Icons.landscape, 'label': 'Plot / Land'},
-      {'icon': Icons.domain, 'label': 'Commercial'},
-      {'icon': Icons.group_work, 'label': 'Co-working'},
-      {'icon': Icons.shopping_bag, 'label': 'Buy Commercial'},
-    ];
-
-    return SizedBox(
-      height: 110,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: actions.map((action) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: InkWell(
-                onTap: () {},
-                borderRadius: BorderRadius.circular(16),
-                splashColor: Colors.blue.withOpacity(0.2),
-                child: Column(
-                  children: [
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(action['icon'], color: Colors.blue, size: 28),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      width: 80,
-                      child: Text(
-                        action['label'],
-                        style: const TextStyle(fontSize: 12, color: Colors.black),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInsightsGrid() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 3,
-        children: const [
-          _InsightCard(title: "Price Trends", subtitle: "Check property rates and prices"),
-          _InsightCard(title: "Locality Insights", subtitle: "Know more about different localities"),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+  material.Widget _buildSearch() {
+    return material.Padding(
+      padding: const material.EdgeInsets.symmetric(horizontal: 15),
+      child: material.Row(
         children: [
-          IconButton(
-            icon: Icon(Icons.home, color: _selectedIndex == 0 ? Colors.blue : Colors.grey),
-            onPressed: () => _onTabTapped(0),
+          material.Expanded(
+            child: CustomTextBox(
+              hint: "Search",
+              prefix: const material.Icon(material.Icons.search, color: material.Colors.grey),
+            ),
           ),
-          IconButton(
-            icon: Icon(Icons.play_circle_fill, color: _selectedIndex == 1 ? Colors.blue : Colors.grey),
-            onPressed: () => _onTabTapped(1),
-          ),
-          const SizedBox(width: 48),
-          IconButton(
-            icon: Icon(Icons.favorite_border, color: _selectedIndex == 3 ? Colors.blue : Colors.grey),
-            onPressed: () => _onTabTapped(3),
-          ),
-          IconButton(
-            icon: Icon(Icons.person_outline, color: _selectedIndex == 4 ? Colors.blue : Colors.grey),
-            onPressed: () => _onTabTapped(4),
-          ),
+          const material.SizedBox(width: 10),
+          IconBox(
+            child: const material.Icon(material.Icons.filter_list_rounded, color: material.Colors.white),
+            bgColor: AppColor.secondary,
+            radius: 10,
+          )
         ],
       ),
+    );
+  }
+
+  material.Widget _buildCategories() {
+    List<material.Widget> lists = List.generate(
+      categories.length,
+          (index) => CategoryItem(
+        data: categories[index],
+        selected: index == _selectedCategory,
+        onTap: () {
+          setState(() {
+            _selectedCategory = index;
+          });
+        },
+      ),
+    );
+    return material.SingleChildScrollView(
+      scrollDirection: material.Axis.horizontal,
+      padding: const material.EdgeInsets.only(bottom: 5, left: 15),
+      child: material.Row(children: lists),
+    );
+  }
+
+  material.Widget _buildPopulars() {
+    return material.SizedBox(
+      height: 240,
+      child: material.PageView.builder(
+        controller: material.PageController(viewportFraction: 0.8),
+        itemCount: populars.length,
+        itemBuilder: (context, index) {
+          return material.Padding(
+            padding: const material.EdgeInsets.symmetric(horizontal: 5),
+            child: PropertyItem(data: populars[index]),
+          );
+        },
+      ),
+    );
+  }
+
+  material.Widget _buildRecommended() {
+    List<material.Widget> lists = List.generate(
+      recommended.length,
+          (index) => RecommendItem(data: recommended[index]),
+    );
+    return material.SingleChildScrollView(
+      scrollDirection: material.Axis.horizontal,
+      padding: const material.EdgeInsets.only(bottom: 5, left: 15),
+      child: material.Row(children: lists),
+    );
+  }
+
+  material.Widget _buildRecent() {
+    List<material.Widget> lists = List.generate(
+      recents.length,
+          (index) => RecentItem(data: recents[index]),
+    );
+    return material.SingleChildScrollView(
+      scrollDirection: material.Axis.horizontal,
+      padding: const material.EdgeInsets.only(bottom: 5, left: 15),
+      child: material.Row(children: lists),
     );
   }
 }
-class _InsightCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _InsightCard({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Flexible(
-              child: Text(
-                subtitle,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
